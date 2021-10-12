@@ -17,7 +17,7 @@ public class Menu {
 
     static final String DB_URL = "jdbc:mysql://localhost:3306/pizzeria";
     static final String USER = "root";
-    static final String PASS = "@Roubix24.";
+    static final String PASS = "";
 
     Statement stmt = null;
     Connection conn = null;
