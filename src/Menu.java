@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.sql.*;
 
 public class Menu {
 
@@ -14,31 +15,80 @@ public class Menu {
     private int GameTime= 10;//default
     private ArrayList<String>selectedArr= new ArrayList<>();
 
+    static final String DB_URL = "jdbc:mysql://localhost:3306/pizzeria";
+    static final String USER = "root";
+    static final String PASS = "cRisimAastricht2020!";
 
+    Statement stmt = null;
+    Connection conn = null;
 
-    private ArrayList<String>PizzaArr= new ArrayList<String>(Arrays.asList("","Margherita","Napoletana","Greca"
-            ,"Prosciutto","Diavola","Salsiccia","Tonno","Pugliese","Peperoni","Suprema","Moretti"));
-    private ArrayList <String>PizzaIngArr=new ArrayList<String>(Arrays.asList("","","anchovies","olives","ham"
-            ,"spicy salami","sausage","tuna","onions","peppers","ham, spicy salami"));
-    private ArrayList <Double>PizzaPriceArr=new ArrayList<Double>(Arrays.asList(0.0,5.0,6.5,6.5,7.0,7.0,6.5,7.0,6.0,7.0,8.5));
+    private ArrayList<String>PizzaArr = new ArrayList<String>();
+    private ArrayList <String>PizzaIngArr = new ArrayList<String>();
+    private ArrayList <Double>PizzaPriceArr = new ArrayList<Double>();
 
+    private ArrayList <String>DrinkArr = new ArrayList<String>();
+    private ArrayList <String>DrinkIngArr = new ArrayList<String>();
+    private ArrayList <Double>DrinkPriceArr = new ArrayList<Double>();
 
+    private ArrayList <String>DessertArr = new ArrayList<String>();
+    private ArrayList <String>DessertIngArr = new ArrayList<String>();
+    private ArrayList <Double>DessertPriceArr = new ArrayList<Double>();
 
-    private ArrayList <String>DrinkArr=  new ArrayList<String>(Arrays.asList("","Birra Moretti","Cola-Cola","Aqua San Bernardo"
-            ,"Aqua San Pellegrino"));
-    private ArrayList <String>DrinIngArr=  new ArrayList<String>(Arrays.asList("","Blonde beer 30cl","Coca-Cola 33cl","Still water 50 cl"
-            ,"Sparkling water 50 cl"));
-    private ArrayList <Double>DrinkPriceArr=new ArrayList<Double>(Arrays.asList(0.0,3.5,2.5,2.5,3.0));
+    public Menu() throws SQLException {
 
+        try {
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            stmt = conn.createStatement();
 
-    private ArrayList <String>DessertArr= new ArrayList<String>(Arrays.asList("","Tiramisù","Panna Cotta"));
-    private ArrayList <String>DessertIngArr=  new ArrayList<String>(Arrays.asList("","Mascarpone cheese, ladyfingers, coffee, eggs, sugar, cocoa powder"
-                    ,"Fresh liquid cream, sugar, isinglass, vanilla bean"));
-    private ArrayList <Double>DessertPriceArr=new ArrayList<Double>(Arrays.asList(0.0,4.5,4.0));
+            ResultSet rs = stmt.executeQuery("SELECT Product FROM Menu WHERE Product_ID <= 10");
+            while (rs.next()) {
+                PizzaArr.add(rs.getString("Product"));
+            }
 
+            rs = stmt.executeQuery("SELECT Ingredients FROM Menu WHERE Product_ID <= 10");
+            while (rs.next()) {
+                PizzaIngArr.add(rs.getString("Ingredients"));
+            }
 
+            rs = stmt.executeQuery("SELECT Price_EURO FROM Menu WHERE Product_ID <= 10");
+            while (rs.next()) {
+                PizzaPriceArr.add(rs.getDouble("Price_EURO"));
+            }
 
-    public Menu(){
+            rs = stmt.executeQuery("SELECT Product FROM Menu WHERE Product_ID >= 11 AND Product_ID <= 14");
+            while (rs.next()) {
+                DrinkArr.add(rs.getString("Product"));
+            }
+
+            rs = stmt.executeQuery("SELECT Ingredients FROM Menu WHERE Product_ID >= 11 AND Product_ID <= 14");
+            while (rs.next()) {
+                DrinkIngArr.add(rs.getString("Ingredients"));
+            }
+
+            rs = stmt.executeQuery("SELECT Price_EURO FROM Menu WHERE Product_ID >= 11 AND Product_ID <= 14");
+            while (rs.next()) {
+                DrinkPriceArr.add(rs.getDouble("Price_EURO"));
+            }
+
+            rs = stmt.executeQuery("SELECT Product FROM Menu WHERE Product_ID >= 15");
+            while (rs.next()) {
+                DessertArr.add(rs.getString("Product"));
+            }
+
+            rs = stmt.executeQuery("SELECT Ingredients FROM Menu WHERE Product_ID >= 15");
+            while (rs.next()) {
+                DessertIngArr.add(rs.getString("Ingredients"));
+            }
+
+            rs = stmt.executeQuery("SELECT Price_EURO FROM Menu WHERE Product_ID >= 15");
+            while (rs.next()) {
+                DessertPriceArr.add(rs.getDouble("Price_EURO"));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         create();
     }
 
@@ -189,22 +239,22 @@ public class Menu {
 
         //BUTTONS:------------------------------------------------------------------------------------------------
 
-        MyButton BMargherita= new MyButton(1,PizzaArr);
-        MyButton BNapoletana= new MyButton(2,PizzaArr);
-        MyButton BGreca= new MyButton(3,PizzaArr);
-        MyButton BProsciutto=new MyButton(4,PizzaArr);
-        MyButton BDiavola=new MyButton(5,PizzaArr);
-        MyButton BSalsiccia=new MyButton(6,PizzaArr);
-        MyButton BTonno=new MyButton(7,PizzaArr);
-        MyButton BPugliese=new MyButton(8,PizzaArr);
-        MyButton BPeperoni=new MyButton(9,PizzaArr);
-        MyButton BSuprema=new MyButton(10,PizzaArr);
-        MyButton BBirra=new MyButton(1,DrinkArr);//
-        MyButton BCola=new MyButton(2,DrinkArr);
-        MyButton BAquaSB=new MyButton(3,DrinkArr);
-        MyButton BAquaSP=new MyButton(4,DrinkArr);;
-        MyButton BTiramisu=new MyButton(1,DessertArr);//
-        MyButton BCotta=new MyButton(2,DessertArr);
+        MyButton BMargherita= new MyButton(0,PizzaArr);
+        MyButton BNapoletana= new MyButton(1,PizzaArr);
+        MyButton BGreca= new MyButton(2,PizzaArr);
+        MyButton BProsciutto=new MyButton(3,PizzaArr);
+        MyButton BDiavola=new MyButton(4,PizzaArr);
+        MyButton BSalsiccia=new MyButton(5,PizzaArr);
+        MyButton BTonno=new MyButton(6,PizzaArr);
+        MyButton BPugliese=new MyButton(7,PizzaArr);
+        MyButton BPeperoni=new MyButton(8,PizzaArr);
+        MyButton BSuprema=new MyButton(9,PizzaArr);
+        MyButton BBirra=new MyButton(0,DrinkArr);
+        MyButton BCola=new MyButton(1,DrinkArr);
+        MyButton BAcquaSB=new MyButton(2,DrinkArr);
+        MyButton BAcquaSP=new MyButton(3,DrinkArr);;
+        MyButton BTiramisu=new MyButton(0,DessertArr);
+        MyButton BPanna=new MyButton(1,DessertArr);
 
         putButton(BMargherita,PanelPizzaCenter,1,48,true);
         putButton(BNapoletana,PanelPizzaCenter,2,48,false);
@@ -219,11 +269,11 @@ public class Menu {
 
         putButton(BBirra,PanelDrinkCenter,1,40,true);
         putButton(BCola,PanelDrinkCenter,2,40,true);
-        putButton(BAquaSB,PanelDrinkCenter,3,40,true);
-        putButton(BAquaSP,PanelDrinkCenter,4,40,true);
+        putButton(BAcquaSB,PanelDrinkCenter,3,40,true);
+        putButton(BAcquaSP,PanelDrinkCenter,4,40,true);
 
         putButton(BTiramisu,PanelDessertCenter,1,60,true);
-        putButton(BCotta,PanelDessertCenter,2,60,true);
+        putButton(BPanna,PanelDessertCenter,2,60,true);
 
 
         //BUTTON ORDER
@@ -236,12 +286,18 @@ public class Menu {
                         //TODO
                         //launchMethod(selectedArr);
 
+                        /*try {
+                            ResultSet rs = stmt.executeQuery("INSERT INTO orders VALUES()");
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }*/
+
                         invalid=false;
                         frame.dispose();
                     }
                 }
                 if(invalid){
-                    JOptionPane.showMessageDialog(frame, "Select at least a Pizza!");
+                    JOptionPane.showMessageDialog(frame, "Please select at least one Pizza.");
                 }
 
             }
@@ -283,10 +339,10 @@ public class Menu {
                     JTextField nField = new JTextField(5);
 
                     JPanel myPanel = new JPanel();
-                    myPanel.add(new JLabel("amount"));
+                    myPanel.add(new JLabel("Amount"));
                     myPanel.add(nField);
                     int result = (Integer) JOptionPane.showConfirmDialog(null, myPanel,
-                            "please introduce the amount", JOptionPane.OK_CANCEL_OPTION);
+                            "Please introduce the amount:", JOptionPane.OK_CANCEL_OPTION);
 
                     if (result == JOptionPane.OK_OPTION) {
                         //this is a dangerous code since the user could enter an invalid input (a String for example)
@@ -300,7 +356,7 @@ public class Menu {
 
                         //if an error occur (most likely a wrong input), we consider that the test has failed
                         catch(Exception ex) {
-                            System.out.println("Shit....an exception");
+                            System.out.println("Please introduce an integer.");
                         }
 
 
@@ -321,28 +377,28 @@ public class Menu {
 
 
         MyInfoButton ibutton= new MyInfoButton(b);
-        ibutton.setText("?");
+        ibutton.setText("i");
         ibutton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ArrayList arr= b.getArr();
                 int index=b.getIndex();
                 ArrayList IngArr=null;
                 ArrayList PriceArr=null;
-                if(arr.get(1).equals("Margherita")){
+                if(arr.get(0).equals("Pizza Margherita")){
                     IngArr=PizzaIngArr;
                     PriceArr=PizzaPriceArr;
                 }
-                if(arr.get(1).equals("Birra Moretti")){
-                    IngArr=DrinIngArr;
+                if(arr.get(0).equals("Birra Moretti")){
+                    IngArr=DrinkIngArr;
                     PriceArr=DrinkPriceArr;
                 }
-                if(arr.get(1).equals("Tiramisù")){
+                if(arr.get(0).equals("Tiramisù")){
                     IngArr=DessertIngArr;
                     PriceArr=DessertPriceArr;
                 }
 
                 JOptionPane.showMessageDialog(null
-                        ,("INGREDIENTS: Tomato, mozzarella, "+IngArr.get(index)+"\nPRICE:"+((Double)PriceArr.get(index))*109/100),
+                        ,("INGREDIENTS: " + IngArr.get(index) + "\nPRICE: "+((Double)PriceArr.get(index))*109/100),
                         "Information",JOptionPane.QUESTION_MESSAGE);
             }
         });
@@ -371,4 +427,3 @@ public class Menu {
         }
     }
 }
-
