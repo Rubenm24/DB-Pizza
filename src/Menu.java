@@ -17,7 +17,7 @@ public class Menu {
 
     static final String DB_URL = "jdbc:mysql://localhost:3306/pizzeria";
     static final String USER = "root";
-    static final String PASS = "cRisimAastricht2020!";
+    static final String PASS = "@Roubix24.";
 
     Statement stmt = null;
     Connection conn = null;
@@ -283,8 +283,38 @@ public class Menu {
                 boolean invalid=true;
                 for (String p:PizzaArr){
                     if (selectedArr.contains(p)){
+                        String name="";
+                        String phonenumber="";
+                        String adress="";
+
                         //TODO
-                        //launchMethod(selectedArr);
+                        JTextField nameField = new JTextField(5);
+                        JTextField phoneField = new JTextField(5);
+                        JTextField adressField = new JTextField(5);
+
+                        JPanel myPanel = new JPanel();
+                        myPanel.add(new JLabel("Name:"));
+                        myPanel.add(nameField);
+                        myPanel.add(Box.createHorizontalStrut(20));
+                        myPanel.add(new JLabel("Phone number:"));
+                        myPanel.add(phoneField);
+                        myPanel.add(Box.createHorizontalStrut(20));
+                        myPanel.add(new JLabel("Address:"));
+                        myPanel.add(adressField);
+                        myPanel.add(Box.createHorizontalStrut(20));
+
+
+                        //Generate the pop up
+                        int result = JOptionPane.showConfirmDialog(null, myPanel,
+                                "Give the following information", JOptionPane.OK_CANCEL_OPTION);
+
+                        //if OK is pressed, we take the inputs
+                        if (result == JOptionPane.OK_OPTION) {
+                            name=nameField.getText();
+                            phonenumber=phoneField.getText();
+                            adress=adressField.getText();
+                        }
+
 
                         /*try {
                             ResultSet rs = stmt.executeQuery("INSERT INTO orders VALUES()");
@@ -422,7 +452,7 @@ public class Menu {
             selectedArr.add(s);
     }
     public void removeFromSelected(String s){
-        for(int i=0;i<selectedArr.size();i++){
+        while (selectedArr.contains(s)){
             selectedArr.remove(s);
         }
     }
